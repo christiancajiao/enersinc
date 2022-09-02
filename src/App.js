@@ -1,6 +1,8 @@
 import './App.css';
 import React from "react"
 import {useState, useEffect} from "react"
+
+import SavedPerson from "./crud/SavedPerson"
 import { Table, Layout, Menu } from 'antd';
 import {
   MenuFoldOutlined,
@@ -16,11 +18,16 @@ const { Header, Sider, Content } = Layout;
 function App() {
   const [collapsed, setCollapsed] = useState(false);
   const [data, setData] = useState([])
+  const [savedList, setSavedList] = useState([])
 
   const url = 'https://gorest.co.in/public/v2/users'
   useEffect(() => {
-    console.log(data)
     fetch(url).then(response => response.json()).then(data => setData(data))
+    const savedLocal = JSON.parse(localStorage.getItem("savedPerson"))
+    if(savedLocal !== null) {
+      setSavedList(savedLocal)
+    }
+    console.log(savedLocal)
   }, [])
 
 
@@ -43,8 +50,14 @@ function App() {
     },
     {
       title: 'Add',
-      render: (text, record) => (
-        <button onClick={()=> console.log(record)}>
+      render: (person) => (
+        <button onClick={()=> {
+          const savedLocal = JSON.parse(localStorage.getItem("savedPerson"))
+          if(savedLocal === null){
+            localStorage.setItem('savedPerson', JSON.stringify([person]))
+          }
+          localStorage.setItem('savedPerson', JSON.stringify([...savedLocal, person]))
+        }}>
           {"Add"}
         </button>
        ),
@@ -95,6 +108,7 @@ function App() {
             minHeight: 280,
           }}
         >
+          <SavedPerson />
             <Table columns={columns} dataSource={data} size="big" pagination={false} />
         </Content>
       </Layout>
