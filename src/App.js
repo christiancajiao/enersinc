@@ -3,7 +3,7 @@ import React from "react"
 import {useState, useEffect} from "react"
 
 import SavedPerson from "./crud/SavedPerson"
-import { Table, Layout, Menu } from 'antd';
+import { Table, Layout, Menu} from 'antd';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -55,8 +55,16 @@ function App() {
           const savedLocal = JSON.parse(localStorage.getItem("savedPerson"))
           if(savedLocal === null){
             localStorage.setItem('savedPerson', JSON.stringify([person]))
+          } else {
+            //check if the user already exist in localstorage
+            let repeted = savedLocal.find((e) => e.name === person.name)
+            if(repeted === undefined) {
+              localStorage.setItem('savedPerson', JSON.stringify([...savedLocal, person]))
+            } else {
+              return
+            }
+
           }
-          localStorage.setItem('savedPerson', JSON.stringify([...savedLocal, person]))
         }}>
           {"Add"}
         </button>
