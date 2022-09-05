@@ -6,6 +6,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import axios from 'axios';
 import {useState, useEffect} from "react"
 
 import SavedPerson from "./crud/SavedPerson"
@@ -26,12 +27,11 @@ function App() {
 
   const url = 'https://gorest.co.in/public/v2/users'
   useEffect(() => {
-    fetch(url).then(response => response.json()).then(data => setData(data))
+    axios.get(url).then(response => setData(response.data))
     const savedLocal = JSON.parse(localStorage.getItem("savedPerson"))
     if(savedLocal !== null) {
       setSavedList(savedLocal)
     }
-    console.log(savedLocal)
   }, [])
 
   return (
