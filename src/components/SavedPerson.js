@@ -55,8 +55,8 @@ function SavedPerson() {
       function onDelete(person) {
         console.log(person)
         Modal.confirm({
-            title: 'Estas seguro de querer eliminar esta persona?',
-            okText: "si, estoy seguro",
+            title: 'Are you sure of delete this?',
+            okText: "yes",
             okType: "danger",
             onOk: () => {  
                 setData((data) =>{

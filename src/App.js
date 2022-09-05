@@ -9,10 +9,10 @@ import {
 import axios from 'axios';
 import {useState, useEffect} from "react"
 
-import SavedPerson from "./crud/SavedPerson"
+import SavedPerson from "./components/SavedPerson"
 import { Table, Layout, Menu} from 'antd';
 import 'antd/dist/antd.css';
-import FetchList from './crud/FetchList';
+import FetchList from './components/FetchList';
 
 
 const { Header, Sider, Content } = Layout;
@@ -46,11 +46,11 @@ function App() {
           
         >
           <Menu.Item key="1">
-              <span>Nueva Lista</span>
+              <span>New List</span>
               <Link to="/" />
           </Menu.Item>
           <Menu.Item key="2">
-              <span>Almacenados</span>
+              <span>Saved List</span>
               <Link to="/saved-list" />
           </Menu.Item>
         </Menu>
