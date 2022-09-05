@@ -1,24 +1,28 @@
 import './App.css';
 import React from "react"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 import {useState, useEffect} from "react"
 
 import SavedPerson from "./crud/SavedPerson"
 import { Table, Layout, Menu} from 'antd';
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import 'antd/dist/antd.css';
+import FetchList from './crud/FetchList';
 
 
 const { Header, Sider, Content } = Layout;
+const SubMenu = Menu.SubMenu;
 
 
 function App() {
   const [collapsed, setCollapsed] = useState(false);
   const [data, setData] = useState([])
   const [savedList, setSavedList] = useState([])
+  const [content, setContent] = useState('fetchList')
 
   const url = 'https://gorest.co.in/public/v2/users'
   useEffect(() => {
@@ -30,51 +34,8 @@ function App() {
     console.log(savedLocal)
   }, [])
 
-
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Gender',
-      dataIndex: 'gender',
-    },
-    {
-      title: 'email',
-      dataIndex: 'email',
-    },
-    {
-      title: 'status',
-      dataIndex: 'status',
-    },
-    {
-      title: 'Add',
-      render: (person) => (
-        <button onClick={()=> {
-          const savedLocal = JSON.parse(localStorage.getItem("savedPerson"))
-          if(savedLocal === null){
-            localStorage.setItem('savedPerson', JSON.stringify([person]))
-          } else {
-            //check if the user already exist in localstorage
-            let repeted = savedLocal.find((e) => e.name === person.name)
-            if(repeted === undefined) {
-              localStorage.setItem('savedPerson', JSON.stringify([...savedLocal, person]))
-            } else {
-              return
-            }
-
-          }
-        }}>
-          {"Add"}
-        </button>
-       ),
-    }
-  ];
-
-
   return (
-    <div className="App">
+    <Router>
       <Layout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo" />
@@ -82,32 +43,19 @@ function App() {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['1']}
-          items={[
-            {
-              key: '1',
-              icon: <UserOutlined />,
-              label: 'lista',
-            },
-            {
-              key: '2',
-              icon: <UserOutlined />,
-              label: 'Almacenados',
-            }
-          ]}
-        />
+          
+        >
+          <Menu.Item key="1">
+              <span>Nueva Lista</span>
+              <Link to="/" />
+          </Menu.Item>
+          <Menu.Item key="2">
+              <span>Almacenados</span>
+              <Link to="/saved-list" />
+          </Menu.Item>
+        </Menu>
       </Sider>
       <Layout className="site-layout">
-        <Header
-          className="site-layout-background"
-          style={{
-            padding: 0,
-          }}
-        >
-          {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-            className: 'trigger',
-            onClick: () => setCollapsed(!collapsed),
-          })}
-        </Header>
         <Content
           className="site-layout-background"
           style={{
@@ -116,12 +64,14 @@ function App() {
             minHeight: 280,
           }}
         >
-          <SavedPerson />
-            <Table columns={columns} dataSource={data} size="big" pagination={false} />
+          <Routes>
+            <Route exact path="/" element={<FetchList data={data}/>}/>
+            <Route exact path="/saved-list" element={<SavedPerson />}/>
+          </Routes>
         </Content>
       </Layout>
     </Layout>
-    </div>
+    </Router>
   );
 }
 
