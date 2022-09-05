@@ -1,6 +1,7 @@
 import {useState, useEffect} from "react"
 
 import { Table} from 'antd';
+import {EditOutlined, DeleteOutlined} from '@ant-design/icons'
 
 function SavedPerson() {
     const [data, setData] = useState([])
@@ -9,7 +10,7 @@ function SavedPerson() {
     if(savedLocal !== null) {
         setData(savedLocal)
     }
-    })
+    }, [data])
     const columns = [
         {
           title: 'Name',
@@ -31,21 +32,28 @@ function SavedPerson() {
           title: 'actions',
           render: (person) => (
             <div>
-                <button onClick={()=> {
-              console.log("delete")
-            }}>
-              Delete
-            </button>
-            <button onClick={()=> {
-              console.log('edit')
-            }}>
-              Edit
-            </button>
+            <EditOutlined onClick={()=> {
+                onEdit(person)
+            }}/>
+            <DeleteOutlined onClick={()=> {
+                onDelete(person)
+            }}  style={{color: 'red', marginLeft: 12}}/>
             </div>
             
            ),
         }
       ];
+
+      function onEdit(person) {
+        console.log(person)
+      }
+      function onDelete(person) {
+        console.log(person)
+        setData((data) =>{
+            return data.filter((savedPerson) => savedPerson.id !== person.id)
+        })
+        localStorage.setItem('savedPerson', JSON.stringify(data.filter((savedPerson) => savedPerson.id !== person.id)))
+      }
     return(
         <Table columns={columns} dataSource={data} size="big" pagination={false} />
     )
